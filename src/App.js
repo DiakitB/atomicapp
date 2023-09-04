@@ -79,7 +79,7 @@ function Header() {
   return (
     <header>
       <h1>
-        <span>⚛️</span>The Atomic Blog
+        <span>⚛️</span>Context API
       </h1>
       <div>
         <Results />
