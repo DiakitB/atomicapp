@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
-import { createContext } from "react";
-import { useContext } from "react";
 
 function createRandomPost() {
   return {
@@ -9,7 +7,6 @@ function createRandomPost() {
     body: faker.hacker.phrase(),
   };
 }
-//1) create a new context
 const PostContext = createContext();
 function App() {
   const [posts, setPosts] = useState(() =>
@@ -45,12 +42,10 @@ function App() {
   );
 
   return (
-    //2) PROVIDE VALUE TO CHILD COMPONENTS
     <PostContext.Provider
       value={{
-        posts: SearchPosts,
+        posts: searchedPosts,
         onClearPosts: handleClearPosts,
-        onAddPost: handleAddPost,
         searchQuery,
         setSearchQuery,
       }}
@@ -64,7 +59,7 @@ function App() {
         </button>
 
         <Header />
-        <Main posts={searchedPosts} onAddPost={handleAddPost} />
+        <Main />
         <Archive onAddPost={handleAddPost} />
         <Footer />
       </section>
@@ -73,13 +68,11 @@ function App() {
 }
 
 function Header() {
-  ///3) COMSUMING CONTEXT VALUE
   const { onClearPosts } = useContext(PostContext);
-
   return (
     <header>
       <h1>
-        <span>⚛️</span>Context API
+        <span>⚛️</span>The Atomic Blog
       </h1>
       <div>
         <Results />
@@ -103,27 +96,28 @@ function SearchPosts() {
 
 function Results() {
   const { posts } = useContext(PostContext);
-  return <p>🚀 {posts.length} atomic posts found</p>;
+  return <p>🚀 {posts.length} CONTEXT-API</p>;
 }
 
-function Main({ posts, onAddPost }) {
+function Main() {
   return (
     <main>
-      <FormAddPost onAddPost={onAddPost} />
-      <Posts posts={posts} />
+      <FormAddPost />
+      <Posts />
     </main>
   );
 }
 
-function Posts({ posts }) {
+function Posts() {
   return (
     <section>
-      <List posts={posts} />
+      <List />
     </section>
   );
 }
 
-function FormAddPost({ onAddPost }) {
+function FormAddPost() {
+  const { onAddPost } = useContext(PostContext);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
@@ -152,7 +146,8 @@ function FormAddPost({ onAddPost }) {
   );
 }
 
-function List({ posts }) {
+function List() {
+  const { posts } = useContext(PostContext);
   return (
     <ul>
       {posts.map((post, i) => (
